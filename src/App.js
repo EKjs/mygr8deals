@@ -13,6 +13,10 @@ import ViewSingleAd from "./components/ViewSingleAd";
 import UserProfile from "./components/UserProfile";
 import EditProfile from "./components/EditProfile";
 import RegisterStore from "./components/RegisterStore";
+import SearchResults from "./components/SearchResults";
+import MyAdsPage from "./components/MyAdsPage";
+import MyFavAds from "./components/MyFavAds";
+import MyMessages from "./components/MyMessages";
 function App() {
   return (
     <AppContextWrapper>
@@ -25,10 +29,15 @@ function App() {
             <Route exact path="/view/:adId" component={ViewSingleAd}/>
                <Route exact path="/signin" component={SignIn}/>
             <Route exact path="/signup" component={SignUp}/>
+            <Route exact path="/search" component={SearchResults}/>
             <ProtectedRoute exact path="/myprofile" component={UserProfile}/>
+            <ProtectedRoute exact path="/myfavads" component={MyFavAds}/>
+            <ProtectedRoute exact path="/messages" component={MyMessages}/>
             <ProtectedRoute exact path="/editprofile" component={EditProfile}/>
             <ProtectedRoute exact path="/registerstore" component={RegisterStore}/>
             <ProtectedRoute exact path='/newad' component={CreateNewAd} />
+            <ProtectedRoute exact path='/myads' component={MyAdsPage} />
+            <ProtectedRoute exact path='/editad/:adId' component={CreateNewAd} />
             <ProtectedRoute exact path='/admin/categoryeditor' component={AddEditCategory} />
             
             {/*    <Route exact path="/leaderboard" component={LeaderBoard}/>
@@ -37,6 +46,10 @@ function App() {
               <ProtectedRoute exact path='/mygames' component={MyGames} />
               <ProtectedRoute exact path='/play/:gameId' component={Game} />
               <Route path='*' component={NotFound} /> */}
+              <Route exact path="/bysubcategory/:subCatId" component={MainPage}/>
+              <Route exact path="/bycategory/:catId" component={MainPage}/>
+              <Route exact path="/bycity/:cityId" component={MainPage}/>
+              <Route exact path="/byuser/:adsByUserId" component={MainPage}/>
               <Route exact path="/" component={MainPage}/>
             </Switch>
           </Col>

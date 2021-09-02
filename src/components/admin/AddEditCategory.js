@@ -6,7 +6,7 @@ import LoadingSpinner from '../LoadingSpinner';
 
 const AddEditCategory = () => {
     //const userType = localStorage.getItem("userType");
-    const { categoriesList, subCategoriesList,loading, error, currentlyLoadedAds, setCurrentlyLoadedAds,setLoading, setError,updateMenuItems,setUpdateMenuItems } =
+    const { categoriesList, subCategoriesList,loading, error, setLoading, setError,updateMenuItems,setUpdateMenuItems } =
     useContext(AppContext);
 
     const [selectedCatId, setSelectedCatId] = useState();
@@ -39,6 +39,7 @@ const AddEditCategory = () => {
             }else if(reqType==='putSc'){
                 data = await axios.put(`${process.env.REACT_APP_BE}subcategories/${selectedSubCatId}`,{parentId:selectedCatId,subCategory:subCatDesc},axiosConfig);
             };
+            console.log(data);
             setUpdateMenuItems(!updateMenuItems)
             setLoading(false);
           } catch (error) {
@@ -74,7 +75,7 @@ const AddEditCategory = () => {
             setSelectedCatId(categoriesList[0].id);
             setCatDesc(categoriesList[0].description);
         }
-    }, [selectedCatId,subCategoriesList]);
+    }, [categoriesList,selectedCatId,subCategoriesList]);
 
     useEffect(() => {
         
@@ -86,7 +87,7 @@ const AddEditCategory = () => {
             setSelectedCatId(categoriesList[0].id);
             setCatDesc(categoriesList[0].description);
         } */
-    }, [selectedSubCatId,subCategoriesList,selectedCatId]);
+    }, [selectedSubCatId,subCategoriesList,selectedCatId,curSubCatList]);
 
     if (loading) return <LoadingSpinner/>
     return (<>

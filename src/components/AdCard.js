@@ -1,11 +1,11 @@
 import {useContext} from 'react';
-import { Card, Button, Col } from "react-bootstrap";
-import { Trash, Pencil } from "react-bootstrap-icons";
+import { Card, Button, Col,Row,Container } from "react-bootstrap";
+import { Trash, Pencil, Eye, Heart } from "react-bootstrap-icons";
 import { AppContext } from "../context/AppContext";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const AdCard = ({photo,title,address,price,created,catId,adId}) => {
+const AdCard = ({photo,title,address,price,created,catId,adId,views,cityName,cityId,category,subCategory,subCategoryId}) => {
   const { setError,setLoading } = useContext(AppContext);
   const userType = localStorage.getItem("userType");
   const adminDeleteAd = async (adId) => {
@@ -27,21 +27,64 @@ const AdCard = ({photo,title,address,price,created,catId,adId}) => {
       }
     }
   }
+  const addAdToFavors = async(id,descr) => {
+    console.log(id);
+    const favAdData = {
+        favAdId: id,
+        description: descr,
+      };
+    try {
+      setLoading(true);
+      const { data } = await axios.post(`${process.env.REACT_APP_BE}favads/`,favAdData,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
+      console.log(data);
+      setLoading(false);
+    } catch (error) {
+      if (error.response) {
+        setError(error.response.data.error);
+        setTimeout(() => setError(null), 5000);
+        setLoading(false);
+      } else {
+        setError(error.message);
+        setTimeout(() => setError(null), 5000);
+        setLoading(false);
+      }
+    }
+  }
 
   return (
     <Col>
-      <Card style={{ width: '18rem' }} border={catId===13 ? 'success': 'secondary'}>
+      <Card style={{ width: '18rem', minHeight: '36rem'}} border={catId===13 ? 'success': 'secondary'}>
+        
         {userType==='999' && <Card.Header><Pencil /><Trash onClick={()=>adminDeleteAd(adId)} /></Card.Header> }
-        <Card.Img variant="top" src={photo ? `${process.env.REACT_APP_BE}images/${photo[0]}` : 'images/noimg.png' } />
+        <Link to={`/view/${adId}`}>
+        <Card.Img className='p-3' style={{objectFit:'cover',height:'20rem' }} variant="top" src={photo && photo.length>0 ? `${process.env.REACT_APP_BE}images/${photo[0]}` : '/images/noimg.png' } />
+        </Link>
         <Card.Body>
           <Card.Title>{price} €</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">{address && address.length>60 ? address.substring(0, 60) + '...' : ''}</Card.Subtitle>
-          <Card.Text>
-            {title.substring(0, 100)}{title.length>100 && '...'}
+          
+          <Card.Text >
+            <Link to={`/view/${adId}`} style={{textDecoration:'none'}}>{title.substring(0, 100)}{title.length>100 && '...'}</Link>
           </Card.Text>
-          <Button variant="primary" as={Link} to={`/view/${adId}`}>Go somewhere</Button>
+          
         </Card.Body>
-        <Card.Footer className="text-muted">{new Date(created).toLocaleString()}</Card.Footer>
+        
+        <Container><Row><Col>
+        <Row>
+        <Col><Heart size={30} color='red' style={{cursor:'pointer'}} onClick={()=>addAdToFavors(adId,title)} /></Col>
+        </Row>
+        <Row>
+          <Col>
+          <Link className="fs-6 text-muted" to={`/bysubcategory/${subCategoryId}`} style={{textDecoration:'none'}}>{subCategory} </Link> 
+          <Link className="fs-6 text-muted" to={`/bycity/${cityId}`} style={{textDecoration:'none'}}> in {cityName}</Link>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={9}><p className='fs-6'>{new Date(created).toLocaleString()}</p></Col><Col xs={3}><p className='fs-6'><Eye/> {views}</p></Col>
+          {/* <Link to={`/editad/${adId}`}>edit</Link> */}
+        </Row>
+
+        </Col>
+        </Row></Container>
       </Card>
       </Col>
   );

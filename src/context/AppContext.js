@@ -17,9 +17,10 @@ const AppContextWrapper = ({ children }) => {
 
   const [categoriesList, setCategoriesList] = useState([]);
   const [subCategoriesList, setSubCategoriesList] = useState([]);
-  const [currentlyLoadedAds,setCurrentlyLoadedAds] = useState([]);
+  //const [currentlyLoadedAds,setCurrentlyLoadedAds] = useState([]);
 //  const [userType,setUserType] = useState(null);
   const [updateMenuItems,setUpdateMenuItems] = useState(true);
+  const [searchParams,setSearchParams] = useState({});
 
   useEffect(()=>{
     const loadMenuData = async () => {
@@ -137,7 +138,7 @@ const AppContextWrapper = ({ children }) => {
 
   return (
     <AppContext.Provider
-      value={{ categoriesList,subCategoriesList, loading, isAuthenticated, error, signUp, signIn, signOut, currentlyLoadedAds, setCurrentlyLoadedAds, setLoading, setError,updateMenuItems,setUpdateMenuItems }}
+      value={{ searchParams,setSearchParams,categoriesList,subCategoriesList, loading, isAuthenticated, error, signUp, signIn, signOut, setLoading, setError,updateMenuItems,setUpdateMenuItems }}
     >
       {children}
     </AppContext.Provider>

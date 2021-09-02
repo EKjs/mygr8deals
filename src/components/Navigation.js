@@ -38,6 +38,7 @@ const Navigation = () => {
               <Dropdown.Item as={Link} to="/myprofile"><FileEarmarkPerson size={24} style={{marginRight:'1rem'}}/>My profile</Dropdown.Item>
               <Dropdown.Item as={Link} to="/mystore"><CashCoin size={24} style={{marginRight:'1rem'}}/>My Store</Dropdown.Item>
               <Dropdown.Item as={Link} to="/messages"><LayoutTextWindowReverse size={24} style={{marginRight:'1rem'}}/>Messages</Dropdown.Item>
+              <Dropdown.Item as={Link} to="/myfavads"><LayoutTextWindowReverse size={24} style={{marginRight:'1rem'}}/>Fav ads</Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={signOut}><DoorOpen size={24} /> Log out</Dropdown.Item>
             </Dropdown.Menu>

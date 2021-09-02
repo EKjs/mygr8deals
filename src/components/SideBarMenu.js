@@ -13,7 +13,7 @@ const SideBarMenu = () => {
     return (
       <Navbar.Text className='me-auto'>
         <Button variant="secondary" onClick={showMenu}>
-         <List/> All categories
+         <List size={24}/> All categories
         </Button>
   
         <Offcanvas show={show} onHide={closeMenu}>

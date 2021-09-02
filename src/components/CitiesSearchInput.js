@@ -1,8 +1,8 @@
 import { Dropdown,FormControl,Popover,Overlay } from 'react-bootstrap';
-import { useState,useRef } from 'react';
+import { useState,useRef,useEffect } from 'react';
 import axios from 'axios';
 
-const CitiesSearchInput = ({setCoords,setCityId}) => {
+const CitiesSearchInput = ({setCoords,setCityId,cityPlaceholder}) => {
     const [plzOrCityInput, setPlzOrCityInput] = useState('');
     const [citiesToChoose,setCitiesToChoose] = useState([]);
     const [show, setShow] = useState(false);
@@ -21,7 +21,6 @@ const CitiesSearchInput = ({setCoords,setCityId}) => {
         setPlzOrCityInput(city.name);
         setCityId(city.id);
         setCoords(city.coords);
-        console.log(city.id,city.coords);
     };
 
     const changePlzOrCityInput = (e) => {
@@ -38,6 +37,25 @@ const CitiesSearchInput = ({setCoords,setCityId}) => {
             if (timer.current)clearTimeout(timer.current);
         }
     };
+    useEffect(() => {
+        if(cityPlaceholder)setPlzOrCityInput(cityPlaceholder);
+    }, [cityPlaceholder])
+/* 
+    const getMyCoords = () => {
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+            };
+        const success=pos=>setCoords([pos.coords.latitude,pos.coords.longitude]);
+        const error=err=>console.warn(`ERROR(${err.code}): ${err.message}`);
+        navigator.geolocation.getCurrentPosition(success, error, options);
+        onKeyPress={(e)=>{if(e.key==='Enter')getMyCoords()}}
+    };
+ */
+/* useEffect(() => {
+    if(cityId)setPlzOrCityInput()
+}, []) */
 
     return (
         <>
@@ -47,6 +65,7 @@ const CitiesSearchInput = ({setCoords,setCityId}) => {
         aria-label="SearchCityPLZ"
         value={plzOrCityInput}
         onChange={changePlzOrCityInput}
+        
         onBlur={() => setShow(false)}
         onFocus={() =>
         plzOrCityInput.length > 3 &&

@@ -1,74 +1,54 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useContext } from "react";
 import {
   Form,
   FormControl,
   Button,
   InputGroup,
-  Popover,
-  Overlay,
-  Dropdown, Navbar
+ Navbar
 } from "react-bootstrap";
 import { Search, GeoAlt } from "react-bootstrap-icons";
-import axios from "axios";
+import { useHistory } from "react-router-dom";
+
 import { AppContext } from "../context/AppContext";
+import CitiesSearchInput from "./CitiesSearchInput";
 
 const SearchBar = () => {
-    const { setCurrentlyLoadedAds } =
+    const { setSearchParams } =
     useContext(AppContext);
-  const [plzOrCityInput, setPlzOrCityInput] = useState("");
-  const [citiesList, setCitiesList] = useState([]);
-  const [searchQ, setSearchQ] = useState("");
-  const [radius, setRadius] = useState("");
+    const hist = useHistory();
+  const [curCityId, setCurCityId] = useState();
+  const [coords,setCoords] = useState();
+  const [searchQ, setSearchQ] = useState('');
+  const [radius, setRadius] = useState('');
 
-  const [show, setShow] = useState(false);
-  const target = useRef(null);
-  const timer = useRef(null);
 
-  const getCitiesListFromServer = async (curInpVal) => {
-    const reqBody = { searchString: curInpVal };
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_BE}search/plzorcity/`,
-      reqBody
-    );
-    setCitiesList(data);
-    if (data.length > 0) setShow(true);
-    else setShow(false);
-  };
-
-  const changePlzOrCityInput = (e) => {
-    const curInpVal = e.target.value;
-    setPlzOrCityInput(curInpVal);
-    console.log(curInpVal);
-    if (curInpVal.length > 2) {
-      console.log(">2");
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      timer.current = setTimeout(() => {
-        console.log("userStopped");
-        getCitiesListFromServer(curInpVal);
-      }, 1000);
-    }else{
-      if (timer.current) {
-          clearTimeout(timer.current);
-        }
-  }
-  };
 
   const doSearch = () => {
+
+    //cityId, cityCoords, distance, searchText, catId, subCatId
     const reqBody = {
-      userSearchQuery: searchQ,
-      cityOrPlz: plzOrCityInput,
+      cityId: curCityId,
+      cityCoords:coords,
       distance: radius,
+      searchText:searchQ,
+/*       catId:null,
+      subCatId:null, */
     };
-    const getData = async () => {
+    setSearchParams(reqBody);
+    const location = {
+      pathname: '/search',
+      state: { fromDashboard: true }
+    }
+    hist.push(location)
+    /* const getData = async () => {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BE}search/`,
+        `${process.env.REACT_APP_BE}search/v2/`,
         reqBody
       );
-      setCurrentlyLoadedAds(data)
+      setSearchParams(data)
+      console.log(data);
     };
-    getData();
+    getData(); */
   };
   const inputRadius = (e) => {
     const r = new RegExp(/^[0-9]*$/);
@@ -99,40 +79,7 @@ const SearchBar = () => {
           <InputGroup.Text style={{ backgroundColor: "#f7f7f9" }}>
             <GeoAlt />
           </InputGroup.Text>
-          <FormControl
-            type="text"
-            placeholder="City or PLZ"
-            className="mr-2"
-            aria-label="SearchCityPLZ"
-            value={plzOrCityInput}
-            onChange={changePlzOrCityInput}
-            onBlur={() => setShow(false)}
-            onFocus={() =>
-              plzOrCityInput.length > 3 &&
-              citiesList.length > 0 &&
-              setShow(true)
-            }
-            ref={target}
-          />
-          <Overlay target={target.current} show={show} placement="bottom">
-            <Popover
-              className="overflow-auto"
-              style={{ maxHeight: "50%" }}
-              id="popover-basic"
-            >
-              <Popover.Body>
-                {citiesList.map((item, idx) => (
-                  <Dropdown.Item
-                    key={`optK${idx}`}
-                    onClick={() => setPlzOrCityInput(item.name)}
-                  >
-                    {item.name}
-                  </Dropdown.Item>
-                ))}
-              </Popover.Body>
-            </Popover>
-          </Overlay>
-          
+            <CitiesSearchInput setCoords={setCoords}  setCityId={setCurCityId} /> 
           </InputGroup>
           <InputGroup className="col">
           <InputGroup.Text style={{ backgroundColor: "#f7f7f9" }}>
@@ -158,7 +105,7 @@ const SearchBar = () => {
         </datalist>
           <Button
             onClick={doSearch}
-            variant="outline-grey-100"
+            variant="secondary"
             style={{ backgroundColor: "#f7f7f9" }}
           >
             Search
