@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav, Dropdown } from "react-bootstrap";
-import { CashCoin, DoorOpen, FileEarmarkPerson, LayoutTextWindowReverse, ListStars, PersonCheck, PersonPlus, PlusSquare } from "react-bootstrap-icons";
+import { CashCoin, DoorOpen, FileEarmarkPerson, LayoutTextWindowReverse, ListStars, PersonCheck, PersonPlus, PlusSquare, BookmarkHeart } from "react-bootstrap-icons";
 import { NavLink, Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import SideBarMenu from "./SideBarMenu";
@@ -15,7 +15,7 @@ const Navigation = () => {
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid>
         <Navbar.Brand as={NavLink} to="/">
-          MGD
+          I buy it!
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
@@ -38,7 +38,8 @@ const Navigation = () => {
               <Dropdown.Item as={Link} to="/myprofile"><FileEarmarkPerson size={24} style={{marginRight:'1rem'}}/>My profile</Dropdown.Item>
               <Dropdown.Item as={Link} to="/mystore"><CashCoin size={24} style={{marginRight:'1rem'}}/>My Store</Dropdown.Item>
               <Dropdown.Item as={Link} to="/messages"><LayoutTextWindowReverse size={24} style={{marginRight:'1rem'}}/>Messages</Dropdown.Item>
-              <Dropdown.Item as={Link} to="/myfavads"><LayoutTextWindowReverse size={24} style={{marginRight:'1rem'}}/>Fav ads</Dropdown.Item>
+              <Dropdown.Item as={Link} to="/myfavads"><BookmarkHeart size={24} style={{marginRight:'1rem'}}/>Fav ads</Dropdown.Item>
+              <Dropdown.Item as={Link} to="/myfavusers"><BookmarkHeart size={24} style={{marginRight:'1rem'}}/>Fav users</Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={signOut}><DoorOpen size={24} /> Log out</Dropdown.Item>
             </Dropdown.Menu>

@@ -1,17 +1,19 @@
 import axios from 'axios';
-import { Alert,Row,Col,Carousel,Breadcrumb } from 'react-bootstrap';
+import { Alert,Row,Col,Carousel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
 import { Map, Marker } from "pigeon-maps";
 import { TelephoneFill } from 'react-bootstrap-icons';
+import AddToFavsButton from './AddToFavsButton';
 
 const ViewSingleAd = () => {
     const {adId}=useParams();
     const [loading,setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [adData, setAdData] = useState({});
+   
     useEffect(()=>{
        const loadAdDetails = async ()=>{
         try {
@@ -86,6 +88,9 @@ if (loading)return <LoadingSpinner/>
                   
               </Col>
               <Col>
+              <AddToFavsButton targetId={adData.adId} description={adData.title} />
+              </Col>
+              <Col>
               <p className="fs-6 text-muted text-end">ID: {adData.adId}</p>
               </Col>
             </Row>
@@ -97,11 +102,12 @@ if (loading)return <LoadingSpinner/>
               <Col sm={4} >
                   <Row>
                   <Col className="m-3 p-3"  style={{backgroundColor:'#faf9f9'}}>
-                  {adData.storeId && (<><Link to={`/bystore/${adData.storeId}`} style={{textDecoration:'none'}}><h4 classname="secondary">{adData.storeName}</h4></Link><br/></>)}
+                  {adData.storeId && (<><Link to={`/viewstore/${adData.storeId}`} style={{textDecoration:'none'}}><h4 classname="secondary">{adData.storeName}</h4></Link><br/></>)}
                   <Link className="fs-6 text-muted" to={`/byuser/${adData.ownerId}`} style={{textDecoration:'none'}}><h4>{adData.userName}</h4></Link> <br/>
                   <h5><TelephoneFill size={24}/> {adData.userPhone}</h5><br/>
                   <p className='fs-6 text-muted'>Member since {new Date(adData.created).toLocaleString()}</p>
                   <p className='fs-6 text-muted'>Was online {new Date(adData.wasOnline).toLocaleString()}</p>
+                  <AddToFavsButton targetId={adData.ownerId} description={adData.userName} path='user' />
                   </Col>
                   </Row>
                   <Row>

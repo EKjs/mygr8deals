@@ -35,11 +35,11 @@ const MyAdsPage = () => {
               } catch (error) {
                 if (error.response) {
                   setError(error.response.data.error);
-                  setTimeout(() => setError(null), 3000);
+                  // setTimeout(() => setError(null), 3000);
                   setLoading(false);
                 } else {
                   setError(error.message);
-                  setTimeout(() => setError(null), 3000);
+                  // setTimeout(() => setError(null), 3000);
                   setLoading(false);
                 }
               }
@@ -82,11 +82,11 @@ const MyAdsPage = () => {
         } catch (error) {
           if (error.response) {
             setError(error.response.data.error);
-            setTimeout(() => setError(null), 5000);
+            // setTimeout(() => setError(null), 5000);
             setLoading(false);
           } else {
             setError(error.message);
-            setTimeout(() => setError(null), 5000);
+            // setTimeout(() => setError(null), 5000);
             setLoading(false);
           }
         }

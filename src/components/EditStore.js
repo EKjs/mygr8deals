@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import axios from 'axios';
 import { Col, Row,Form,FloatingLabel,Button,Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-
+import { Link, useHistory,useParams } from 'react-router-dom';
 import CitiesSearchInput from './CitiesSearchInput';
 import MapGeolocationPos from './MapGeolocationPos';
 
-const RegisterStore = () => {
+const EditStore = () => {
     const axiosConfig = {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data' }
       };
+    const {storeId} = useParams();
 
     const [loading,setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -22,7 +22,40 @@ const RegisterStore = () => {
     const [storeLogoImg, setStoreLogoImg] = useState('');
     const [cityId,setCityId] = useState();
     const [coords,setCoords] = useState();
+    const [cityName,setCityName] = useState();
+    const hist = useHistory();
 
+    useEffect(() => {
+      const loadStoreDetails = async ()=>{
+        try {
+            setLoading(true);
+            const { data } = await axios.get(`${process.env.REACT_APP_BE}stores/my/`,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
+            //setStoreData(data);
+            setStoreTitle(data.title);
+            setStoreAddress(data.address);
+            setStoreDescription(data.description);
+            setStoreLogoImg(data.photo);
+            setCityId(data.cityId);
+            setCoords(data.coords);
+            setCityName(data.cityName);
+            console.log(data);
+            setLoading(false);
+          } catch (error) {
+            if (error.response) {
+              setError(error.response.data.error);
+              setTimeout(() => setError(null), 5000);
+              setLoading(false);
+            } else {
+              setError(error.message);
+              setTimeout(() => setError(null), 5000);
+              setLoading(false);
+            }
+          }
+       };
+      if (storeId){
+        loadStoreDetails();
+      }
+    }, [storeId])
 
 const uploadImage = async (e) => {
     const formData = new FormData();
@@ -32,7 +65,7 @@ const uploadImage = async (e) => {
 
         const { data:uploadedFile } = await axios.post(`${process.env.REACT_APP_BE}image-upload`,formData,axiosConfig);
         console.log(uploadedFile);
-        setStoreLogoImg(uploadedFile[0].path);
+        setStoreLogoImg(uploadedFile[0]);
         setLoading(false);
       } catch (error) {
         if (error.response) {
@@ -85,18 +118,27 @@ const uploadImage = async (e) => {
         };
         try {
             setLoading(true);
-            const { data } = await axios.post(`${process.env.REACT_APP_BE}stores/`,storeData,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
-            console.log(data);
-            //fdfd
-            setLoading(false);
+            let resp;
+            if(storeId){
+              const { data } = await axios.put(`${process.env.REACT_APP_BE}stores/${storeId}`,storeData,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
+              resp=data;
+            }else{
+              const { data } = await axios.post(`${process.env.REACT_APP_BE}stores/`,storeData,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
+              resp=data;
+            }
+            console.log(resp);
+            if (resp.id){
+              setLoading(false);
+              hist.push(`/mystore`)
+            }
           } catch (error) {
             if (error.response) {
               setError(error.response.data.error);
-              setTimeout(() => setError(null), 5000);
+              // setTimeout(() => setError(null), 5000);
               setLoading(false);
             } else {
               setError(error.message);
-              setTimeout(() => setError(null), 5000);
+              // setTimeout(() => setError(null), 5000);
               setLoading(false);
             }
           }
@@ -164,7 +206,7 @@ const uploadImage = async (e) => {
               </Row>
             <Row className="my-2">
               <Col>
-                <CitiesSearchInput setCoords={setCoords} setCityId={setCityId} />
+                <CitiesSearchInput cityPlaceholder={cityName} setCoords={setCoords} setCityId={setCityId} />
               </Col>
             </Row>
             <Row>
@@ -178,7 +220,7 @@ const uploadImage = async (e) => {
               <Form.Control type="file" onChange={uploadImage} />
               <Form.Label>Choose photo or logo</Form.Label>
             </Form.Group>
-            {storeLogoImg && <img className='img-fluid' src={storeLogoImg} alt='logo'/>}
+            {storeLogoImg && <img src={`${process.env.REACT_APP_BE}images/${storeLogoImg}`} style={{objectFit:'scale-down',width:'18rem',height:'20rem' }} alt='logo' />}
           </Col>
 
             </Row>
@@ -192,4 +234,4 @@ const uploadImage = async (e) => {
           </Row>)
 }
 
-export default RegisterStore
+export default EditStore

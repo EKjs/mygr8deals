@@ -59,11 +59,11 @@ const EditProfile = () => {
           } catch (error) {
             if (error.response) {
               setError(error.response.data.error);
-              setTimeout(() => setError(null), 5000);
+              // setTimeout(() => setError(null), 5000);
               setLoading(false);
             } else {
               setError(error.message);
-              setTimeout(() => setError(null), 5000);
+              // setTimeout(() => setError(null), 5000);
               setLoading(false);
             }
           }

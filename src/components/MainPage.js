@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Alert, Row,Col,Pagination } from "react-bootstrap";
+import { Alert, Row,Col } from "react-bootstrap";
 import AdCard from "./AdCard";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
+import PageNums from "./PageNums";
+
+const ADSPERPAGE=8;
 
 const MainPage = () => {
-  const {subCatId,catId,cityId,adsByUserId} = useParams();
+  const {subCatId,catId,cityId,adsByUserId,adsByStoreId} = useParams();
     const [currentlyLoadedAds,setCurrentlyLoadedAds] = useState();
     const [error,setError] = useState(null);
     const [loading,setLoading] = useState(true);
+
+    const [curPage,setCurPage] = useState(1);
+    const [totalPages,setTotalPages] = useState();
 
     console.log(subCatId,catId,cityId,adsByUserId);
     
@@ -22,28 +28,35 @@ const MainPage = () => {
       else if(subCatId && !catId)url+=`bysubcategory/${subCatId}`;
       else if(cityId)url+=`bycity/${cityId}`;
       else if(adsByUserId)url+=`byuser/${adsByUserId}`;
+      else if(adsByStoreId)url+=`bystore/${adsByStoreId}`;
         const getAds = async () => {
             try {
                 setLoading(true);
                 console.log(process.env.REACT_APP_BE);
-                const { data:adList } = await axios.get(`${process.env.REACT_APP_BE}${url}`);
+                const { data:adList } = await axios.get(`${process.env.REACT_APP_BE}${url}?skip=${(curPage-1)*ADSPERPAGE}&limit=${ADSPERPAGE}`);
                 setCurrentlyLoadedAds(adList);
+                if(adList.length>0){
+                  setTotalPages(Math.ceil(parseInt(adList[0].totalRows,10)/ADSPERPAGE));
+                }else {
+                  setTotalPages(0);
+                  setCurPage(1);
+                }
                 console.log(adList);
                 setLoading(false);
               } catch (error) {
                 if (error.response) {
                   setError(error.response.data.error);
-                  setTimeout(() => setError(null), 3000);
+                  //setTimeout(() => setError(null), 3000);
                   setLoading(false);
                 } else {
                   setError(error.message);
-                  setTimeout(() => setError(null), 3000);
+                  //setTimeout(() => setError(null), 3000);
                   setLoading(false);
                 }
               }
         }
         getAds()
-    }, [subCatId,catId,cityId])
+    }, [subCatId,catId,cityId,adsByStoreId,adsByUserId,curPage])
 
     if (loading) return <LoadingSpinner />;
     if (error) return <Alert variant="danger">{error}</Alert>;
@@ -69,13 +82,12 @@ const MainPage = () => {
             views={ad.views}
              /> ))}
         </Row>
-{/*         <Row>
-          <Col>
-            <Pagination>{new Array(parseInt(currentlyLoadedAds[0].totalRows,10)).fill('x').map((x,idx)=>(<Pagination.Item key={idx} active={idx === 2}>
-      {idx+1}
-    </Pagination.Item>))}</Pagination>
+        <Row className='justify-content-center mt-4'>
+          <Col sm='auto'>
+          <PageNums totalPages={totalPages} currentPage={curPage} cbPageClick={setCurPage} />
           </Col>
-        </Row> */}
+        </Row>
+        
         </Col>
       </Row>
     )

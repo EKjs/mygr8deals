@@ -56,14 +56,14 @@ const SearchResults = () => {
         };
         return reqBody;
       });
-    }, [searchInCat])
+    }, [searchInCat,selectedCatId,setSearchParams])
     useEffect(() => {
       console.log(searchInSubCat);
       if(searchInSubCat)setSearchParams(prev=>{
         prev.subCatId=selectedSubCatId;
         return prev;
       });
-    }, [searchInSubCat])
+    }, [searchInSubCat,selectedSubCatId,setSearchParams])
 
     useEffect(() => {
       if (selectedCatId){

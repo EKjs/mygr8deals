@@ -1,41 +1,21 @@
 import {useContext} from 'react';
-import { Card, Button, Col,Row,Container } from "react-bootstrap";
-import { Trash, Pencil, Eye, Heart } from "react-bootstrap-icons";
+import { Card, Col,Row,Container } from "react-bootstrap";
+import { Trash, Pencil, Eye } from "react-bootstrap-icons";
 import { AppContext } from "../context/AppContext";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import AddToFavsButton from './AddToFavsButton';
 
 const AdCard = ({photo,title,address,price,created,catId,adId,views,cityName,cityId,category,subCategory,subCategoryId}) => {
   const { setError,setLoading } = useContext(AppContext);
   const userType = localStorage.getItem("userType");
+
+
   const adminDeleteAd = async (adId) => {
     console.log(adId);
     try {
       setLoading(true);
       const { data } = await axios.delete(`${process.env.REACT_APP_BE}ads/${adId}`,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
-      console.log(data);
-      setLoading(false);
-    } catch (error) {
-      if (error.response) {
-        setError(error.response.data.error);
-        setTimeout(() => setError(null), 5000);
-        setLoading(false);
-      } else {
-        setError(error.message);
-        setTimeout(() => setError(null), 5000);
-        setLoading(false);
-      }
-    }
-  }
-  const addAdToFavors = async(id,descr) => {
-    console.log(id);
-    const favAdData = {
-        favAdId: id,
-        description: descr,
-      };
-    try {
-      setLoading(true);
-      const { data } = await axios.post(`${process.env.REACT_APP_BE}favads/`,favAdData,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
       console.log(data);
       setLoading(false);
     } catch (error) {
@@ -70,7 +50,9 @@ const AdCard = ({photo,title,address,price,created,catId,adId,views,cityName,cit
         
         <Container><Row><Col>
         <Row>
-        <Col><Heart size={30} color='red' style={{cursor:'pointer'}} onClick={()=>addAdToFavors(adId,title)} /></Col>
+        <Col> 
+        <AddToFavsButton targetId={adId} description={title} />
+        </Col>
         </Row>
         <Row>
           <Col>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Alert, Row, Table, Modal, Button,Toast,ToastContainer,FloatingLabel,Form } from "react-bootstrap";
+import { Alert, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { CheckCircle,CheckAll, Trash } from "react-bootstrap-icons";
 import LoadingSpinner from "./LoadingSpinner";
@@ -9,11 +9,6 @@ const MyMessages = () => {
     const [messageList,setMessageList] = useState();
     const [error,setError] = useState(null);
     const [loading,setLoading] = useState(true);
-
-    const [deleteId,setDeleteId] = useState();
-    const [showModal, setShowModal] = useState(false);
-    const [showToast,setShowToast] = useState(false);
-    const [showToast2,setShowToast2] = useState(false);
     const [updateMessageList,setUpdateMessageList] = useState(false);
 
    

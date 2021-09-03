@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { PencilSquare,Trash } from "react-bootstrap-icons";
 import LoadingSpinner from "./LoadingSpinner";
 
-const MyFavAds = () => {
-    const [favAds,setFavAds] = useState();
+const MyFavUsers = () => {
+    const [favUsers,setFavUsers] = useState();
     const [error,setError] = useState(null);
     const [loading,setLoading] = useState(true);
 
@@ -24,12 +24,12 @@ const MyFavAds = () => {
     const handleModalClose = () => setShowModal(false);
 
     useEffect(() => {
-        const getFavAds = async () => {
+        const getFavUsers = async () => {
             try {
                 setLoading(true);
                 console.log(process.env.REACT_APP_BE);
-                const { data:favList } = await axios.get(`${process.env.REACT_APP_BE}favads/myfav/`,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
-                setFavAds(favList);
+                const { data:favList } = await axios.get(`${process.env.REACT_APP_BE}favusers/myfav/`,{headers: { Authorization: `Bearer ${localStorage.getItem('token')}`}});
+                setFavUsers(favList);
                 console.log(favList);
                 setLoading(false);
               } catch (error) {
@@ -44,7 +44,7 @@ const MyFavAds = () => {
                 }
               }
         }
-        getFavAds();
+        getFavUsers();
     }, [updateFavList]);
 
     const handleDeleteFavAd = async () => {
@@ -116,7 +116,7 @@ const MyFavAds = () => {
       </tr>
     </thead>
     <tbody>
-            {favAds.map((fav,idx)=>(
+            {favUsers.map((fav,idx)=>(
             <tr key={`adk${idx}`}>
               <td><Link to={`/view/${fav.adId}`} style={{textDecoration:'none'}}>{fav.adTitle}</Link></td>
               <td>{fav.description}</td>
@@ -179,4 +179,4 @@ const MyFavAds = () => {
     )
 }
 
-export default MyFavAds
+export default MyFavUsers

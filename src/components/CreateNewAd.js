@@ -1,5 +1,5 @@
 import {useState,useContext,useEffect} from 'react'
-import { Col, Row, Form, FloatingLabel, Carousel,Button,CloseButton,ListGroup,Alert } from 'react-bootstrap';
+import { Col, Row, Form, FloatingLabel, Carousel,Button,Alert } from 'react-bootstrap';
 import { AppContext } from "../context/AppContext";
 import LoadingSpinner from './LoadingSpinner';
 import axios from 'axios';
@@ -329,7 +329,7 @@ const uploadImages = async(e) => {
                         <Carousel.Item key={`photoK${idx}`}>
                           <img
                             className="d-block w-100"
-                            src={adId ? `${process.env.REACT_APP_BE}images/${photo}` : `${process.env.REACT_APP_BE}temp/${photo}` }
+                            src={`${process.env.REACT_APP_BE}images/${photo}`}
                             alt="what is it?"
                             style={{ objectFit: "scale-down", height: "25rem" }}
                           />
